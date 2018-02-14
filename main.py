@@ -47,7 +47,6 @@ def get_all_data(query):
     #response = service.query().sql(sql=query).execute()
     #logging.info(response['columns'])
     #logging.info(response['rows'])
-    query = "SELECT * FROM " + TABLE_ID + " WHERE  IncomeGroup = 'High income' LIMIT 100"
     response = service.query().sql(sql=query).execute()
     logging.info(response['columns'])
     logging.info(response['rows'])
@@ -75,7 +74,7 @@ def make_query(cols, values, limit):
     string_values = string_values[2:len(string_values)]
     
     #Change this query to have your corresponding column (in our soccer example, the column for our WHERE is Scorer).
-    query = "SELECT " + string_cols + " FROM " + TABLE_ID + " WHERE Scorer = '" + string_values + "'"
+    query = "SELECT " + string_cols + " FROM " + TABLE_ID 
 
     query = query + " LIMIT " + str(limit)
 
@@ -97,12 +96,14 @@ def index():
 
 @app.route('/_update_table', methods=['POST']) 
 def update_table():
-    logging.info(request.get_json())
-    cols = request.json['cols']
-    logging.info(cols)
-    result = get_all_data(make_query(cols, query_values, 100))
-    logging.info(result)
-    return json.dumps({'content' : result['rows'], 'headers' : result['columns']})
+	template = JINJA_ENVIRONMENT.get_template('templates/index.html')
+	logging.info(request.get_json())
+	cols = request.json['cols']
+	logging.info(cols)
+	result = get_all_data(make_query(cols, query_values, 100))
+	logging.info(result)
+	return json.dumps({'content' : result['rows'], 'headers' : result['columns']})
+    
 
 @app.route('/about')
 def about():
